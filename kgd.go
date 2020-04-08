@@ -7,6 +7,18 @@ import (
 	"os"
 )
 
+type PseudoCompany struct {
+	Bin                         string `json:"bin"`
+	Court_decision              string `json:"court_decision"`
+	Illegal_activity_start_date string `json:"illegal_activity_start_date": "01.03.2006"`
+	Owner_iin                   string `json:"owner_iin": "780309301217"`
+	Owner_name                  string `json:"owner_name"`
+	Owner_rnn                   string `json:"owner_rnn"`
+	Rnn                         string `json:"rnn"`
+	Taxpayer_name               string `json:"taxpayer_name"`
+	Taxpayer_organization       string `json:"taxpayer_organization"`
+}
+
 func main() {
 
 	kgd := []string{"list_PSEUDO_COMPANY_KZ_ALL.xlsx", "list_WRONG_ADDRESS_KZ_ALL.xlsx", "list_BANKRUPT_KZ_ALL.xlsx", "list_INACTIVE_KZ_ALL.xlsx", "list_INVALID_REGISTRATION_KZ_ALL.xlsx", "list_VIOLATION_TAX_CODE_KZ_ALL.xlsx", "list_TAX_ARREARS_150_KZ_ALL.xlsx"}
@@ -17,7 +29,6 @@ func main() {
 			panic(err)
 		}
 	}
-
 }
 
 // DownloadFile will download a url to a local file. It's efficient because it will

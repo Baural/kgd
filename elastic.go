@@ -3,12 +3,10 @@ package main
 import (
 	"context" // Context object for Do() methodsd
 	"fmt"     // Format and print cluster data
+	"io/ioutil"
 	"log"     // Log errors and quit
 	"reflect" // Get object methods and attributes
 
-	//"strconv"
-
-	// Convert _id int to string
 	"time" // Set a timeout for the connection
 
 	// Import the Olivere Golang driver for Elasticsearch
@@ -40,6 +38,12 @@ func main() {
 		elastic.SetURL("http://localhost:9200"),
 		elastic.SetHealthcheckInterval(5*time.Second), // quit trying after 5 seconds
 	)
+
+	// Open our jsonFile
+	data, err := ioutil.ReadFile("./pseudo.json")
+	if err != nil {
+		fmt.Print(err)
+	}
 
 	// Check and see if olivere's NewClient() method returned an error
 	if err != nil {
@@ -80,9 +84,6 @@ func main() {
 				Type("companies"). // unique doctype now deprecated
 				Id(doc.Bin).       // Increment _id counter same like BIn
 				BodyJson(doc).     // pass struct instance to BodyJson
-
-				// Omit this if you want dynamically generated _id
-				// Id(strconv.Itoa(id)). // Convert int to string
 
 				Do(ctx) // Initiate API call with context object
 

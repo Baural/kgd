@@ -3,9 +3,9 @@ package main
 import (
 	"fmt"
 	"net/http"
-	"time"
 
 	"github.com/360EntSecGroup-Skylar/excelize"
+	cron "gopkg.in/robfig/cron.v2"
 )
 
 type TaxInfo struct {
@@ -14,6 +14,22 @@ type TaxInfo struct {
 }
 
 func main() {
+	c := schedule()
+	c.Start()
+	<-make(chan int)
+}
+
+func schedule() (c *cron.Cron) {
+	c = cron.New()
+	_, err := c.AddFunc("@every 0h01m0s", load)
+	if err != nil {
+		panic(err)
+	}
+	return
+}
+
+func load() {
+
 	var downloads = []TaxInfo{
 		{"Pseudo Company", "http://kgd.gov.kz/mobile_api/services/taxpayers_unreliable_exportexcel/PSEUDO_COMPANY/KZ_ALL/fileName/list_PSEUDO_COMPANY_KZ_ALL.xlsx"},
 		// {"Bankrupt", "http://kgd.gov.kz/mobile_api/services/taxpayers_unreliable_exportexcel/BANKRUPT/KZ_ALL/fileName/list_BANKRUPT_KZ_ALL.xlsx"},
@@ -39,7 +55,7 @@ func main() {
 	for answer := range answers {
 		fmt.Println(answers[answer])
 	}
-	time.Sleep(100 * time.Millisecond)
+
 }
 
 func DownloadTaxinfo(url string) *excelize.File {

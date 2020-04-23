@@ -21,25 +21,6 @@ type Cell struct {
 	illegalActivityStartDate int
 }
 
-// type Company struct {
-// 	bin              string
-// 	namekz           string
-// 	nameru           string
-// 	registrationdate string
-// 	oked             string
-// 	activitykz       string
-// 	activityru       string
-// 	secondoked       string
-// 	krp              string
-// 	krpkz            string
-// 	krpru            string
-// 	kato             string
-// 	localitykz       string
-// 	localityru       string
-// 	legaladdress     string
-// 	companyowner     string
-// }
-
 type PseudoCompany struct {
 	bin                      string
 	rnn                      string
@@ -54,6 +35,7 @@ type PseudoCompany struct {
 
 func (p PseudoCompany) toString() string {
 	var id string
+
 	if p.bin != "" {
 		id = "\"_id\": \"" + p.bin + "\""
 	}
@@ -73,12 +55,14 @@ func (p PseudoCompany) toString() string {
 func parseAndSendToES(TaxInfoDescription string, f *excelize.File) error {
 	cell := Cell{1, 2, 3, 4, 5,
 		6, 7, 8, 9}
+
 	replacer := strings.NewReplacer(
 		"\"", "'",
 		"\\", "/",
 		"\n", "",
 		"\n\n", "",
 		"\r", "")
+
 	for _, name := range f.GetSheetMap() {
 		// Get all the rows in the name
 		rows := f.GetRows(name)
@@ -108,6 +92,7 @@ func parseAndSendToES(TaxInfoDescription string, f *excelize.File) error {
 					pseudoCompany.courtDecision = replacer.Replace(colCell)
 				case cell.illegalActivityStartDate:
 					pseudoCompany.illegalActivityStartDate = replacer.Replace(colCell)
+
 				}
 			}
 			if pseudoCompany.bin != "" {
@@ -134,7 +119,7 @@ func sendPost(TaxInfoDescription string, query string) error {
 	r := bytes.NewReader(data)
 	resp, err := http.Post("http://localhost:9200/pseudo_company/companies/_bulk", "application/json", r)
 	if err != nil {
-		fmt.Println("Could not send the data to elastic search, region " + TaxInfoDescription)
+		fmt.Println("Could not send the data to elastic search " + TaxInfoDescription)
 		fmt.Println(err)
 		return err
 	}
